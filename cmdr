@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+export CMDR_SRC_DIR=$(cd $(dirname $0) && pwd)
+. "$CMDR_SRC_DIR/common"
+
+if [ ! -d "$CMDR_SRC_DIR/logs" ]; then
+  mkdir "$CMDR_SRC_DIR/logs"
+fi
+
+cmdr_help() {
+    cmdr_name=${0##*/}
+    echo "
+    $cmdr_name
+    The Command Runner
+    Version: $(cat $CMDR_SRC_DIR/VERSION)
+    Usage: $cmdr_name [command]
+    Commands:
+       -g, --grep       Grep for a particular command
+       -a, --add        Add a command to quick commands file
+       -x, --execute    Execute a set of commands
+       -s, --source     Source a set of commands
+       -V, --version    Print version
+       -l, --last       Print last commands
+       -h, --help       Display this help
+    "
+    exit 1
+}
+
+case "$1" in
+  --grep | -g)
+    "$CMDR_SRC_DIR/actions/grep" "$2" | tee -ia "$CMDR_SRC_DIR/logs/grep.log"
+    ;;
+  --add | -a)
+    "$CMDR_SRC_DIR/actions/add" "$2" "$3" | tee -ia "$CMDR_SRC_DIR/logs/add.log"
+    ;;
+  --help | -h)
+    cmdr_help
+    ;;
+  --version | -V)
+    echo $(cat $CMDR_SRC_DIR/VERSION)
+    ;;
+  *)
+    cmdr_help
+    ;;
+esac

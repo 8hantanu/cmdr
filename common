@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+source "$CMDR_SRC_DIR/config"
+
+cmdr_log() {
+    script_name=${0##*/}
+    timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    echo "== $script_name $timestamp $1"
+}
+
+cmdr_get_all_commands() {
+    awk '/```./{flag=1;next}/```/{flag=0}flag' $CMDR_CMDS_FILE
+}
