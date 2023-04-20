@@ -4,9 +4,9 @@ set -e
 . "$CMDR_SRC_DIR/common"
 
 cmdr_help_grep() {
-    echo "
-    Command: grep
-    Usage: --grep | -g [regex]
+    cmdr_help_header
+    echo "\
+    Command: --grep | -g [regex]
     Description: Grep for a particular command
     "
     exit 1
@@ -16,9 +16,17 @@ cmdr_help_grep() {
 
 cmds=`cmdr_get_all_commands | grep $1`
 
+[ "$cmds" == "" ] && cmdr_raise_error "No commands found"
+
+
 cmds=${cmds//$CMDR_VAR_DELIMITER_START/$CMDR_VAR_DELIMITER_START_PRINT}
-cmds=${cmds//$CMDR_VAR_DELIMITER_END/$CMDR_VAR_DELIMITER_END_PRINT}
-cmds=${cmds//$CMDR_VALUE_DELIMITER/$CMDR_VALUE_DELIMITER_PRINT}
+cmds=${cmds/::[^:::>]*:>/$CMDR_VAR_DELIMITER_END_PRINT}
+
+# cmds=${cmds//$CMDR_VAR_DELIMITER_END/$CMDR_VAR_DELIMITER_END_PRINT}
+# cmds=${cmds//$CMDR_VALUE_DELIMITER/$CMDR_VALUE_DELIMITER_PRINT}
 
 # Print all the commands in separate lines in a numbered list
 echo "$cmds" | awk -F "\n" '{print NR ". " $1}'
+
+# Write all commands to last.log
+cmdr_save_history "$cmds"

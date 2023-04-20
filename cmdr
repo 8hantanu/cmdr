@@ -8,38 +8,37 @@ if [ ! -d "$CMDR_SRC_DIR/logs" ]; then
 fi
 
 cmdr_help() {
-    cmdr_name=${0##*/}
-    echo "
-    $cmdr_name
-    The Command Runner
-    Version: $(cat $CMDR_SRC_DIR/VERSION)
-    Usage: $cmdr_name [command]
+    cmdr_help_header
+    echo "\
     Commands:
+       -e, --edit       Edit commands file
        -g, --grep       Grep for a particular command
-       -a, --add        Add a command to quick commands file
        -x, --execute    Execute a set of commands
        -s, --source     Source a set of commands
+       -l, --history    Show commands history
        -V, --version    Print version
-       -l, --last       Print last commands
        -h, --help       Display this help
     "
-    exit 1
 }
 
 case "$1" in
   --grep | -g)
     "$CMDR_SRC_DIR/actions/grep" "$2" | tee -ia "$CMDR_SRC_DIR/logs/grep.log"
     ;;
-  --add | -a)
-    "$CMDR_SRC_DIR/actions/add" "$2" "$3" | tee -ia "$CMDR_SRC_DIR/logs/add.log"
+  --edit | -e)
+    $CMDR_EDITOR $CMDR_COMMANDS_FILE
     ;;
-  --help | -h)
-    cmdr_help
+  --history | -l)
+    $CMDR_EDITOR $CMDR_HISTORY_FILE
     ;;
   --version | -V)
     echo $(cat $CMDR_SRC_DIR/VERSION)
     ;;
-  *)
+  --help | -h)
     cmdr_help
+    ;;
+  *)
+    cmdr_raise_error "Unknown command: $1
+    See help with: cmdr --help"
     ;;
 esac

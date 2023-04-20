@@ -3,11 +3,35 @@
 source "$CMDR_SRC_DIR/config"
 
 cmdr_log() {
-    script_name=${0##*/}
-    timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    echo "== $script_name $timestamp $1"
+    action_name=${0##*/}
+    timestamp=$(date -u +"%Y-%m-%d %H:%M:%S")
+    echo "== $timestamp =="
+    echo "cmdr: $action_name"
+    echo "$1"
+
+}
+
+cmdr_help_header() {
+    echo "
+    cmdr -- The Command Runner
+    Version: $(cat $CMDR_SRC_DIR/VERSION)
+    Usage: cmdr [command]\
+    "
 }
 
 cmdr_get_all_commands() {
-    awk '/```./{flag=1;next}/```/{flag=0}flag' $CMDR_CMDS_FILE
+    awk '/```./{flag=1;next}/```/{flag=0}flag' $CMDR_COMMANDS_FILE
+}
+
+cmdr_raise_error() {
+    echo "
+    Error: $1
+    "
+    exit 1
+}
+
+cmdr_save_history() {
+    [ ! -f $CMDR_HISTORY_FILE ] && touch $CMDR_HISTORY_FILE
+    cmdr_log "$1" >> $CMDR_HISTORY_FILE
+    echo "" >> $CMDR_HISTORY_FILE
 }
