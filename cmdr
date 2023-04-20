@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 
 export CMDR_SRC_DIR=$(cd $(dirname $0) && pwd)
-. "$CMDR_SRC_DIR/common"
+. "$CMDR_SRC_DIR/utils"
 
-if [ ! -d "$CMDR_SRC_DIR/logs" ]; then
-  mkdir "$CMDR_SRC_DIR/logs"
-fi
 
 cmdr_help() {
     cmdr_help_header
@@ -23,7 +20,7 @@ cmdr_help() {
 
 case "$1" in
   --grep | -g)
-    "$CMDR_SRC_DIR/actions/grep" "$2" | tee -ia "$CMDR_SRC_DIR/logs/grep.log"
+    "$CMDR_SRC_DIR/actions/grep" "$2"
     ;;
   --edit | -e)
     $CMDR_EDITOR $CMDR_COMMANDS_FILE
@@ -38,7 +35,8 @@ case "$1" in
     cmdr_help
     ;;
   *)
-    cmdr_raise_error "Unknown command: $1
-    See help with: cmdr --help"
+    cmdr_help_header
+    cmdr_raise_error "Unknown command $1
+    See help: cmdr --help"
     ;;
 esac

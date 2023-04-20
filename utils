@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-source "$CMDR_SRC_DIR/config"
+source "$CMDR_SRC_DIR/.cmdr.conf"
 
 cmdr_log() {
     action_name=${0##*/}

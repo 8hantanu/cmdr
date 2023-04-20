@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-. "$CMDR_SRC_DIR/common"
+. "$CMDR_SRC_DIR/utils"
 
 cmdr_help_grep() {
     cmdr_help_header
@@ -19,11 +19,9 @@ cmds=`cmdr_get_all_commands | grep $1`
 [ "$cmds" == "" ] && cmdr_raise_error "No commands found"
 
 
-cmds=${cmds//$CMDR_VAR_DELIMITER_START/$CMDR_VAR_DELIMITER_START_PRINT}
-cmds=${cmds/::[^:::>]*:>/$CMDR_VAR_DELIMITER_END_PRINT}
+cmds=${cmds//$CMDR_VAR_START/$CMDR_PRINT_START}
+cmds=$(echo "$cmds" | sed -E "s/$CMDR_VAR_SEP[^$CMDR_VAR_SEP$CMDR_VAR_END>]*$CMDR_VAR_END/>/g")
 
-# cmds=${cmds//$CMDR_VAR_DELIMITER_END/$CMDR_VAR_DELIMITER_END_PRINT}
-# cmds=${cmds//$CMDR_VALUE_DELIMITER/$CMDR_VALUE_DELIMITER_PRINT}
 
 # Print all the commands in separate lines in a numbered list
 echo "$cmds" | awk -F "\n" '{print NR ". " $1}'
