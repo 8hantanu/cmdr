@@ -19,24 +19,28 @@ cmdr_help() {
 }
 
 case "$1" in
-  --grep | -g)
-    "$CMDR_SRC_DIR/actions/grep" "$2"
-    ;;
-  --edit | -e)
-    $CMDR_EDITOR $CMDR_COMMANDS_FILE
-    ;;
-  --history | -l)
-    $CMDR_EDITOR $CMDR_HISTORY_FILE
-    ;;
-  --version | -V)
-    echo $(cat $CMDR_SRC_DIR/VERSION)
-    ;;
-  --help | -h)
-    cmdr_help
-    ;;
-  *)
-    cmdr_help_header
-    cmdr_raise_error "Unknown command $1
-    See help: cmdr --help"
-    ;;
+    --edit | -e)
+        $CMDR_EDITOR $CMDR_COMMANDS_FILE
+        ;;
+    --grep | -g)
+        "$CMDR_SRC_DIR/actions/grep" "$2"
+        ;;
+    --source | -s)
+        "$CMDR_SRC_DIR/actions/source" "$2"
+        ;;
+    --history | -l)
+        # $CMDR_EDITOR $CMDR_HISTORY_FILE
+        cat $CMDR_HISTORY_FILE | less
+        ;;
+    --version | -V)
+        echo $(cat $CMDR_SRC_DIR/VERSION)
+        ;;
+    --help | -h)
+        cmdr_help
+        ;;
+    *)
+        cmdr_help_header
+        cmdr_raise_error "Unknown command $1
+        See help: cmdr --help"
+        ;;
 esac

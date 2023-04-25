@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+
+set -e
+. "$CMDR_SRC_DIR/utils"
+
+
+cmdr_format_display() {
+    cmds_disp=${1//$CMDR_VAR_START/$CMDR_PRINT_START}
+    cmds_disp=$(echo "$cmds_disp" | sed -E "s/$CMDR_VAR_SEP[^$CMDR_VAR_SEP$CMDR_VAR_END>]*$CMDR_VAR_END/>/g")
+}
+
+cmdr_display_multiple_commands() {
+    # Print all the commands in separate lines in a numbered list
+    echo "$1" | awk -F "\n" '{print NR ". " $1}'
+}
+
+
+cmdr_grep_commands() {
+    cmds=`cmdr_get_all_commands | grep $1`
+
+    # FIXME: Error if no commands found not working
+    [ "$cmds" == "" ] && cmdr_raise_error "No commands found"
+
+    cmdr_format_display "$cmds"
+
+    cmdr_display_multiple_commands "$cmds_disp"
+}
+
+# Example command:
+# ls <:directory::~/home:>; cp <:src::~/src:> <:dest::~/dest:>
+#
+# print all content in a given command in seprate lines 
+# between the two delimiters '<:' and ':>'
+cmdr_final_command() {
+    entry=$1
+    cmd=$1
+    while [[ $entry =~ $CMDR_VAR_START ]]; do
+        entry=${entry#*$CMDR_VAR_START}
+        key_val=${entry%%$CMDR_VAR_END*}
+
+        key=${key_val%%$CMDR_VAR_SEP*}
+        val=${key_val#*$CMDR_VAR_SEP}
+
+        read -p "<$key>($val): " val
+        [ ! -n "$val" ] && val=${key_val#*$CMDR_VAR_SEP}
+
+        # Replace key_val in command with val in the command and remove the delimiters and print it
+        cmd=${cmd/$key_val/$val}
+        cmd=${cmd/$CMDR_VAR_START/}
+        cmd=${cmd/$CMDR_VAR_END/}
+    done
+    echo "$cmd"
+}
+
+# After display commands
+# take user input from user that is command numbers to source
+# add commands from the cmds to selected_cmds variable base on user input
+# display selected commands
+cmdr_select_commands() {
+    selected_cmds=""
+    read -p "Enter command numbers to source (separated by space): " cmd_nums
+    for cmd_num in $cmd_nums; do
+        cmd=$(echo "$1" | sed -n "${cmd_num}p")
+        cmdr_format_display "$cmd"
+        final_cmd=$(cmdr_final_command "$cmd")
+        echo "$final_cmd"
+    done
+}
+

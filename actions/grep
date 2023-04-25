@@ -2,6 +2,7 @@
 
 set -e
 . "$CMDR_SRC_DIR/utils"
+. "$CMDR_SRC_DIR/actions/common"
 
 cmdr_help_grep() {
     cmdr_help_header
@@ -9,22 +10,12 @@ cmdr_help_grep() {
     Command: --grep | -g [regex]
     Description: Grep for a particular command
     "
-    exit 1
+    exit 0
 }
 
 [ ! -n "$1" ] && cmdr_help_grep
 
-cmds=`cmdr_get_all_commands | grep $1`
-
-[ "$cmds" == "" ] && cmdr_raise_error "No commands found"
-
-
-cmds=${cmds//$CMDR_VAR_START/$CMDR_PRINT_START}
-cmds=$(echo "$cmds" | sed -E "s/$CMDR_VAR_SEP[^$CMDR_VAR_SEP$CMDR_VAR_END>]*$CMDR_VAR_END/>/g")
-
-
-# Print all the commands in separate lines in a numbered list
-echo "$cmds" | awk -F "\n" '{print NR ". " $1}'
+cmdr_grep_commands "$1"
 
 # Write all commands to last.log
 cmdr_save_history "$cmds"
