@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -e
+. "$CMDR_SRC_DIR/utils"
+. "$CMDR_SRC_DIR/actions/common"
+
+cmdr_help_source() {
+    cmdr_help_header
+    echo "\
+    Command: --source | -s [regex]
+    Description: Source a set of commands
+    "
+    exit 0
+}
+
+[ ! -n "$1" ] && cmdr_help_source
+
+cmdr_grep_commands "$1"
+
+selected_cmds=$(cmdr_select_commands "$cmds")
+
+echo "$selected_cmds" > $CMDR_SRC_DIR/src.sh
+
+cmdr_save_history "$selected_cmds"
+

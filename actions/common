@@ -26,11 +26,6 @@ cmdr_grep_commands() {
     cmdr_display_multiple_commands "$cmds_disp"
 }
 
-# Example command:
-# ls <:directory::~/home:>; cp <:src::~/src:> <:dest::~/dest:>
-#
-# print all content in a given command in seprate lines 
-# between the two delimiters '<:' and ':>'
 cmdr_final_command() {
     entry=$1
     cmd=$1
@@ -52,10 +47,6 @@ cmdr_final_command() {
     echo "$cmd"
 }
 
-# After display commands
-# take user input from user that is command numbers to source
-# add commands from the cmds to selected_cmds variable base on user input
-# display selected commands
 cmdr_select_commands() {
     selected_cmds=""
     read -p "Enter command numbers to source (separated by space): " cmd_nums
