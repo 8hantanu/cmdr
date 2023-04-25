@@ -7,16 +7,7 @@ Add the below snippet to `~/.bashrc`.
 
 ```bash
 export CMDR=<path_to_cmdr_folder>
-cmdr () {
-  $CMDR/cmdr ${1:--h} $2
-  src_file="$CMDR/src.sh"
-  if [ -f $src_file ]; then
-    source $src_file
-  fi
-  if [ -f $src_file ]; then
-    rm $src_file
-  fi
-}
+source $CMDR/.cmdr.conf
 ```
 
 ### Help

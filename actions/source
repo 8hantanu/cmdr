@@ -19,7 +19,7 @@ cmdr_grep_commands "$1"
 
 selected_cmds=$(cmdr_select_commands "$cmds")
 
-echo "$selected_cmds" > $CMDR_SRC_DIR/src.sh
+echo "$selected_cmds" > $CMDR_SRC_DIR/src.md
 
 cmdr_save_history "$selected_cmds"
 
