@@ -3,7 +3,6 @@
 export CMDR_SRC_DIR=$(cd $(dirname $0) && pwd)
 . "$CMDR_SRC_DIR/utils"
 
-
 cmdr_help() {
     cmdr_help_header
     echo "\
@@ -27,6 +26,9 @@ case "$1" in
         ;;
     --source | -s)
         "$CMDR_SRC_DIR/actions/source" "$2"
+        ;;
+    --execute | -x)
+        "$CMDR_SRC_DIR/actions/execute" "$2"
         ;;
     --history | -l)
         # $CMDR_EDITOR $CMDR_HISTORY_FILE

@@ -4,22 +4,25 @@ set -e
 . "$CMDR_SRC_DIR/utils"
 . "$CMDR_SRC_DIR/actions/common"
 
-cmdr_help_source() {
+cmdr_help_edit() {
     cmdr_help_header
     echo "\
-    Command: --source | -s [regex]
-    Description: Source a set of commands
+    Command: --edit | -x [regex]
+    Description: Execute a set of commands
     "
     exit 0
 }
 
-[ ! -n "$1" ] && cmdr_help_source
+[ ! -n "$1" ] && cmdr_help_edit
 
 cmdr_grep_commands "$1"
 
 selected_cmds=$(cmdr_select_commands "$cmds")
 
-echo "$selected_cmds" > $CMDR_SOURCE_FILE
+echo "$selected_cmds" > $CMDR_EXECUTE_FILE
 
 cmdr_save_history "$selected_cmds"
+
+chmod +x $CMDR_EXECUTE_FILE
+$CMDR_EXECUTE_FILE
 
